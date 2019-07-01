@@ -21,7 +21,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.2'
+        classpath 'com.android.tools.build:gradle:3.4.1'
     }
 }
 
@@ -46,6 +46,7 @@ android {
     }
 
     dependencies {
-        implementation 'com.google.android.gms:play-services-maps:16.1.0'
+        implementation 'com.google.android.gms:play-services-maps:17.0.0'
+        implementation 'com.google.maps.android:android-maps-utils:0.5'
     }
 }
