@@ -195,7 +195,7 @@ final class GoogleMapController
     googleMap.setOnMapClickListener(this);
     googleMap.setOnMapLongClickListener(this);
     updateMyLocationSettings();
-    markersController.setGoogleMap(googleMap);
+    //markersController.setGoogleMap(googleMap);
     polygonsController.setGoogleMap(googleMap);
     polylinesController.setGoogleMap(googleMap);
     circlesController.setGoogleMap(googleMap);
