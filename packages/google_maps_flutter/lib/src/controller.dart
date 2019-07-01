@@ -76,6 +76,12 @@ class GoogleMapController {
         _googleMapState
             .onLongPress(LatLng._fromJson(call.arguments['position']));
         break;
+      case 'clusterItem#onTap':
+        _googleMapState.onCusterItemTap(call.arguments['markerId']);
+        break;
+      case 'custerItemInfoWindow#onTap':
+        _googleMapState.onCusterItemInfoWindowTap(call.arguments['markerId']);
+        break;
       default:
         throw MissingPluginException();
     }
@@ -108,6 +114,14 @@ class GoogleMapController {
     await channel.invokeMethod<void>(
       'markers#update',
       markerUpdates._toMap(),
+    );
+  }
+
+  Future<void> _updateCluster(_ClusterUpdates clusterUpdates) async {
+    assert(clusterUpdates != null);
+    await channel.invokeMethod<void>(
+      'cluster#update',
+      clusterUpdates._toMap(),
     );
   }
 
