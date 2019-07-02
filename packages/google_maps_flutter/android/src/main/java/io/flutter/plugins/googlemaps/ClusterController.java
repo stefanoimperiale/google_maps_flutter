@@ -6,6 +6,7 @@ package io.flutter.plugins.googlemaps;
 
 import android.util.Log;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -21,7 +22,7 @@ import io.flutter.plugin.common.MethodChannel;
 
 class ClusterController
     implements ClusterManager.OnClusterItemClickListener,
-        ClusterManager.OnClusterClickListener,
+        ClusterManager.OnClusterClickListener<ClusterItemController>,
         ClusterManager.OnClusterInfoWindowClickListener,
         ClusterManager.OnClusterItemInfoWindowClickListener {
 
@@ -97,9 +98,12 @@ class ClusterController
     String markerId = getClusterItemId(clusterItem);
     ClusterItemController clusterItemController = clusterItemIdToController.get(markerId);
     // TODO: to be done
-    // if (clusterItemController != null) {
-    // Convert.interpretMarkerOptions(clusterItem, clusterItemController);
-    // }
+   /*  if (clusterItemController != null) {
+       mClusterManager.getMarkerCollection().getMarkers();
+
+       MarkerController controller = new MarkerController(mClusterManager.getMarkerCollection().getMarkers().iterator().next(), false);
+     Convert.interpretMarkerOptions(clusterItem, controller);
+     }*/
   }
 
   void removeClusterItems(List<Object> clusterItemIdsToRemove) {
@@ -146,10 +150,12 @@ class ClusterController
   }
 
   @Override
-  public boolean onClusterClick(Cluster cluster) {
-    // TODO: to be done
-    Log.d("ClusterController", "onClusterClick: ");
-    return false;
+  public boolean onClusterClick(Cluster<ClusterItemController> cluster) {
+    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+            cluster.getPosition(), (float) Math.floor(googleMap
+                    .getCameraPosition().zoom + 1)), 300,
+            null);
+    return true;
   }
 
   @Override
@@ -168,4 +174,5 @@ class ClusterController
     }
     methodChannel.invokeMethod("custerItemInfoWindow#onTap", Convert.markerIdToJson(clusterItemId));
   }
+
 }

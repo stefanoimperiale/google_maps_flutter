@@ -315,6 +315,7 @@ class Convert {
   }
 
   /** Returns the dartMarkerId of the interpreted marker. */
+  @SuppressWarnings("unchecked")
   static String interpretMarkerOptions(Object o, MarkerOptionsSink sink) {
     final Map<?, ?> data = toMap(o);
     final Object alpha = data.get("alpha");

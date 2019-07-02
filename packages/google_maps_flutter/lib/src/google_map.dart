@@ -36,7 +36,7 @@ class GoogleMap extends StatefulWidget {
     this.indoorViewEnabled = false,
     this.markers,
     this.clusterItems,
-    this.clusterOption,
+    this.clusterOption = const ClusterOption(),
     this.polygons,
     this.polylines,
     this.circles,

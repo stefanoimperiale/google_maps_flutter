@@ -121,9 +121,9 @@ class PlaceMarkerBodyState extends State<PlaceMarkerBody> {
 
   void _addCluster() {
     final int markerCount = markers.length;
-    if (markerCount == 12) {
+  /*  if (markerCount == 12) {
       return;
-    }
+    }*/
     final String markerIdVal = 'marker_id_$_markerIdCounter';
     _markerIdCounter++;
     final MarkerId markerId = MarkerId(markerIdVal);

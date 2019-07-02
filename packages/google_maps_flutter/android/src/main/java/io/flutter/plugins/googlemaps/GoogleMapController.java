@@ -22,7 +22,6 @@ import android.util.Log;
 import android.view.View;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.GoogleMap;
-import android.support.design.widget.Snackbar;
 import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -173,13 +172,15 @@ final class GoogleMapController
     return trackCameraPosition ? googleMap.getCameraPosition() : null;
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public void onMapReady(GoogleMap googleMap) {
     this.googleMap = googleMap;
     this.googleMap.setIndoorEnabled(this.indoorEnabled);
     markerManager = new MarkerManager(googleMap);
-    clusterManager = new ClusterManager<ClusterItemController>(context, googleMap, markerManager);
+    clusterManager = new ClusterManager<>(context, googleMap, markerManager);
     markersController.setMarkerManager(markerManager);
+    markersController.setOnMarkerClickListener(new MarkerClickListener(this));
     CustomClusterRenderer customRenderer =
             new CustomClusterRenderer(context, googleMap, clusterManager);
     googleMap.setOnInfoWindowClickListener(this);
@@ -210,6 +211,7 @@ final class GoogleMapController
     clusterManager.setOnClusterInfoWindowClickListener(clusterController);
     clusterManager.setOnClusterItemInfoWindowClickListener(clusterController);
     clusterManager.setRenderer(customRenderer);
+    customRenderer.setClusterOption(clusterOption);
     updateInitialPolylines();
     updateInitialMarkers();
     updateInitialClusterItems();
@@ -218,6 +220,7 @@ final class GoogleMapController
     updateInitialCircles();
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public void onMethodCall(MethodCall call, MethodChannel.Result result) {
     switch (call.method) {
@@ -594,6 +597,7 @@ final class GoogleMapController
     }
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public void setInitialMarkers(Object initialMarkers) {
     this.initialMarkers = (List<Object>) initialMarkers;
@@ -606,6 +610,7 @@ final class GoogleMapController
     markersController.addMarkers(initialMarkers);
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public void setInitialClusterItems(Object initialClusterItems) {
     this.initialClusterItems = (List<Object>) initialClusterItems;
@@ -621,17 +626,9 @@ final class GoogleMapController
   @Override
   public void setClusterOption(Object clusterOption) {
     this.clusterOption = clusterOption;
-    if (googleMap != null) {
-      updateClusterOption();
-    }
   }
 
-  private void updateClusterOption() {
-    //TODO Controller
-    Snakebar.make(googleMap, "");
-    Log.e(TAG, clusterOption.toString());
-  }
-
+  @SuppressWarnings("unchecked")
   @Override
   public void setInitialPolygons(Object initialPolygons) {
     this.initialPolygons = (List<Object>) initialPolygons;
@@ -644,6 +641,7 @@ final class GoogleMapController
     polygonsController.addPolygons(initialPolygons);
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public void setInitialPolylines(Object initialPolylines) {
     this.initialPolylines = (List<Object>) initialPolylines;
@@ -656,6 +654,7 @@ final class GoogleMapController
     polylinesController.addPolylines(initialPolylines);
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public void setInitialCircles(Object initialCircles) {
     this.initialCircles = (List<Object>) initialCircles;
@@ -702,5 +701,17 @@ final class GoogleMapController
 
   public void setIndoorEnabled(boolean indoorEnabled) {
     this.indoorEnabled = indoorEnabled;
+  }
+
+  private class MarkerClickListener implements GoogleMap.OnMarkerClickListener {
+    GoogleMapController googleMapController;
+    MarkerClickListener(GoogleMapController googleMapController) {
+      this.googleMapController = googleMapController;
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+      return googleMapController.onMarkerClick(marker);
+    }
   }
 }

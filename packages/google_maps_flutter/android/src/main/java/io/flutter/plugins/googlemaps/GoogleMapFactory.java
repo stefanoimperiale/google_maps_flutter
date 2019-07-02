@@ -47,6 +47,12 @@ public class GoogleMapFactory extends PlatformViewFactory {
     if (params.containsKey("circlesToAdd")) {
       builder.setInitialCircles(params.get("circlesToAdd"));
     }
+    if (params.containsKey("circlesToAdd")) {
+      builder.setInitialCircles(params.get("circlesToAdd"));
+    }
+    if (params.containsKey("clusterOptions")) {
+      builder.setClusterOption(params.get("clusterOptions"));
+    }
     return builder.build(id, context, mActivityState, mPluginRegistrar);
   }
 }
