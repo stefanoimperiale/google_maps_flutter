@@ -36,6 +36,7 @@ class GoogleMap extends StatefulWidget {
     this.indoorViewEnabled = false,
     this.markers,
     this.clusterItems,
+    this.clusterOption,
     this.polygons,
     this.polylines,
     this.circles,
@@ -86,6 +87,9 @@ class GoogleMap extends StatefulWidget {
 
   /// Cluster Items to be placed on the map.
   final Set<ClusterItem> clusterItems;
+
+  /// Cluster Options for the map.
+  final ClusterOption clusterOption;
 
   /// Polygons to be placed on the map.
   final Set<Polygon> polygons;
@@ -197,6 +201,7 @@ class _GoogleMapState extends State<GoogleMap> {
       'options': _googleMapOptions.toMap(),
       'markersToAdd': _serializeMarkerSet(widget.markers),
       'clusterItemsToAdd': _serializeClusterSet(widget.clusterItems),
+      'clusterOptions': _serializeClusterOption(widget.clusterOption),
       'polygonsToAdd': _serializePolygonSet(widget.polygons),
       'polylinesToAdd': _serializePolylineSet(widget.polylines),
       'circlesToAdd': _serializeCircleSet(widget.circles),

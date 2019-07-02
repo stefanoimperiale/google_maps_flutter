@@ -328,6 +328,7 @@ class PlaceMarkerBodyState extends State<PlaceMarkerBody> {
               // ignore: prefer_collection_literals
               markers: Set<Marker>.of(markers.values),
               clusterItems: Set<ClusterItem>.of(clusterItems.values),
+              clusterOption: const ClusterOption(),
             ),
           ),
         ),

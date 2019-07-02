@@ -22,6 +22,7 @@ import android.util.Log;
 import android.view.View;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.GoogleMap;
+import android.support.design.widget.Snackbar;
 import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -92,6 +93,7 @@ final class GoogleMapController
   private List<Object> initialCircles;
   private ClusterManager<ClusterItemController> clusterManager;
   private MarkerManager markerManager;
+  private Object clusterOption;
 
   GoogleMapController(
       int id,
@@ -195,7 +197,6 @@ final class GoogleMapController
     googleMap.setOnMapClickListener(this);
     googleMap.setOnMapLongClickListener(this);
     updateMyLocationSettings();
-    //markersController.setGoogleMap(googleMap);
     polygonsController.setGoogleMap(googleMap);
     polylinesController.setGoogleMap(googleMap);
     circlesController.setGoogleMap(googleMap);
@@ -615,6 +616,20 @@ final class GoogleMapController
 
   private void updateInitialClusterItems() {
     clusterController.addClusterItems(initialClusterItems);
+  }
+
+  @Override
+  public void setClusterOption(Object clusterOption) {
+    this.clusterOption = clusterOption;
+    if (googleMap != null) {
+      updateClusterOption();
+    }
+  }
+
+  private void updateClusterOption() {
+    //TODO Controller
+    Snakebar.make(googleMap, "");
+    Log.e(TAG, clusterOption.toString());
   }
 
   @Override

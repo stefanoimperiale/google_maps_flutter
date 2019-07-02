@@ -33,3 +33,4 @@ part 'src/circle_updates.dart';
 part 'src/ui.dart';
 part 'src/cluster_item.dart';
 part 'src/cluster_updates.dart';
+part 'src/cluster_option.dart';
