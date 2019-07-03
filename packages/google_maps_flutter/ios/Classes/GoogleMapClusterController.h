@@ -6,7 +6,7 @@
 #import <GoogleMaps/GoogleMaps.h>
 #import "GoogleMapController.h"
 #import <Google-Maps-iOS-Utils/GMUMarkerClustering.h>
-#import "GoogleMapMarkerController.h"
+
 
 // Point of Interest Item which implements the GMUClusterItem protocol.
 @interface FLTGoogleMapClusterController : NSObject<GMUClusterItem>

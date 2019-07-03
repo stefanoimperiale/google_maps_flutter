@@ -1,6 +1,6 @@
 #import "GoogleMapClusterController.h"
 #import "JsonConversions.h"
-
+#import "GoogleMapMarkerController.h"
 static CLLocationCoordinate2D ToLocation(NSArray* data) {
   return [FLTGoogleMapJsonConversions toLocation:data];
 }
@@ -52,7 +52,7 @@ static CLLocationCoordinate2D ToLocation(NSArray* data) {
         [[FLTGoogleMapMarkerController alloc] initMarkerWithPosition:position
                                                             markerId:clusterItemId
                                                              mapView:_mapView];
-    InterpretMarkerOptions(clusterItem, controller, _registrar);
+    //TODO InterpretMarkerOptions(clusterItem, controller, _registrar);
     [self addClusterItem:clusterItemId withController:controller];
   }
 
