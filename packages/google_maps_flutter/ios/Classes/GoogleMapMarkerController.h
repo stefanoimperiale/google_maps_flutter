@@ -29,6 +29,7 @@
                               markerId:(NSString*)markerId
                                mapView:(GMSMapView*)mapView;
 - (BOOL)consumeTapEvents;
+- (GMSMarker*)getMarker;
 - (void)removeMarker;
 @end
 

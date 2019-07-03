@@ -29,6 +29,9 @@ static void InterpretInfoWindow(id<FLTGoogleMapMarkerOptionsSink> sink, NSDictio
 - (BOOL)consumeTapEvents {
   return _consumeTapEvents;
 }
+- (GMSMarker*)getMarker {
+  return _marker;
+}
 - (void)removeMarker {
   _marker.map = nil;
 }

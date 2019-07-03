@@ -57,6 +57,7 @@ static double ToDouble(NSNumber* data) { return [FLTGoogleMapJsonConversions toD
   FLTPolygonsController* _polygonsController;
   FLTPolylinesController* _polylinesController;
   FLTCirclesController* _circlesController;
+  FLTClusterController* _clusterController;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
@@ -96,6 +97,19 @@ static double ToDouble(NSNumber* data) { return [FLTGoogleMapJsonConversions toD
     _circlesController = [[FLTCirclesController alloc] init:_channel
                                                     mapView:_mapView
                                                   registrar:registrar];
+    _clusterController = [[FLTClusterController alloc] init:_channel
+                                                       mapView:_mapView
+                                                       registrar:registrar];
+    // Set up the cluster manager with default icon generator and renderer.
+    id<GMUClusterAlgorithm> algorithm = [[GMUNonHierarchicalDistanceBasedAlgorithm alloc] init];
+    id<GMUClusterIconGenerator> iconGenerator = [[GMUDefaultClusterIconGenerator alloc] init];
+    id<GMUClusterRenderer> renderer =
+      [[GMUDefaultClusterRenderer alloc] initWithMapView:_mapView
+                                    clusterIconGenerator:iconGenerator];
+    _clusterManager =
+      [[GMUClusterManager alloc] initWithMap:_mapView algorithm:algorithm renderer:renderer];
+
+
     id markersToAdd = args[@"markersToAdd"];
     if ([markersToAdd isKindOfClass:[NSArray class]]) {
       [_markersController addMarkers:markersToAdd];
@@ -111,6 +125,10 @@ static double ToDouble(NSNumber* data) { return [FLTGoogleMapJsonConversions toD
     id circlesToAdd = args[@"circlesToAdd"];
     if ([circlesToAdd isKindOfClass:[NSArray class]]) {
       [_circlesController addCircles:circlesToAdd];
+    }
+    id clusterToAdd = args[@"clusterToAdd"];
+    if ([clusterToAdd isKindOfClass:[NSArray class]]) {
+      [_clusterController addClusterItems:clusterToAdd];
     }
   }
   return self;
@@ -162,6 +180,20 @@ static double ToDouble(NSNumber* data) { return [FLTGoogleMapJsonConversions toD
     if ([markerIdsToRemove isKindOfClass:[NSArray class]]) {
       [_markersController removeMarkerIds:markerIdsToRemove];
     }
+    result(nil);
+  } else if ([call.method isEqualToString:@"cluster#update"]) {
+    id clusterItemsToAdd = call.arguments[@"clusterItemsToAdd"];
+    if ([clusterItemsToAdd isKindOfClass:[NSArray class]]) {
+      [_clusterItemsController addClusterItems:clusterItemsToAdd];
+    }//TODO
+   /* id clusterItemsToChange = call.arguments[@"clusterItemsToChange"];
+    if ([clusterItemsToChange isKindOfClass:[NSArray class]]) {
+      [_clusterItemsController changeClusterItems:clusterItemsToChange];
+    }
+    id clusterItemIdsToRemove = call.arguments[@"clusterItemIdsToRemove"];
+    if ([clusterItemIdsToRemove isKindOfClass:[NSArray class]]) {
+      [_clusterItemsController removeClusterItemIds:clusterItemIdsToRemove];
+    }*/
     result(nil);
   } else if ([call.method isEqualToString:@"polygons#update"]) {
     id polygonsToAdd = call.arguments[@"polygonsToAdd"];
