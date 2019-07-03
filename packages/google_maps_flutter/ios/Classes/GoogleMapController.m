@@ -106,9 +106,9 @@ static double ToDouble(NSNumber* data) { return [FLTGoogleMapJsonConversions toD
     id<GMUClusterRenderer> renderer =
       [[GMUDefaultClusterRenderer alloc] initWithMapView:_mapView
                                     clusterIconGenerator:iconGenerator];
-    _clusterManager =
+    GMUClusterManager *_clusterManager =
       [[GMUClusterManager alloc] initWithMap:_mapView algorithm:algorithm renderer:renderer];
-
+    [_clusterController setClusterManager:_clusterManager];
 
     id markersToAdd = args[@"markersToAdd"];
     if ([markersToAdd isKindOfClass:[NSArray class]]) {
@@ -126,9 +126,9 @@ static double ToDouble(NSNumber* data) { return [FLTGoogleMapJsonConversions toD
     if ([circlesToAdd isKindOfClass:[NSArray class]]) {
       [_circlesController addCircles:circlesToAdd];
     }
-    id clusterToAdd = args[@"clusterToAdd"];
-    if ([clusterToAdd isKindOfClass:[NSArray class]]) {
-      [_clusterController addClusterItems:clusterToAdd];
+    id clusterItemsToAdd = args[@"clusterToAdd"];
+    if ([clusterItemsToAdd isKindOfClass:[NSArray class]]) {
+      [_clusterController addClusterItems:clusterItemsToAdd];
     }
   }
   return self;
@@ -184,7 +184,7 @@ static double ToDouble(NSNumber* data) { return [FLTGoogleMapJsonConversions toD
   } else if ([call.method isEqualToString:@"cluster#update"]) {
     id clusterItemsToAdd = call.arguments[@"clusterItemsToAdd"];
     if ([clusterItemsToAdd isKindOfClass:[NSArray class]]) {
-      [_clusterItemsController addClusterItems:clusterItemsToAdd];
+      [_clusterController addClusterItems:clusterItemsToAdd];
     }//TODO
    /* id clusterItemsToChange = call.arguments[@"clusterItemsToChange"];
     if ([clusterItemsToChange isKindOfClass:[NSArray class]]) {

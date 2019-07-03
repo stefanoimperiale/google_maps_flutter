@@ -17,7 +17,7 @@
 @property(nonatomic, readonly) NSString *snippet;
 @property(nonatomic, readonly) BOOL consumeTapEvents;
 @property(nonatomic, readonly) UIImage *icon;
-@property(nonatomic, readonly) NSString *mapView;
+@property(nonatomic, readwrite) NSString *mapView;
 
 - (instancetype)initClusterItemWithPosition:(CLLocationCoordinate2D)position 
     andName:(NSString *)name 
@@ -27,12 +27,12 @@
 
 @interface FLTClusterController : NSObject
 
-@property(nonatomic, writeonly) GMUClusterManager *clusterManager;
+@property(nonatomic, readwrite) GMUClusterManager *clusterManager;
 
 - (instancetype)init:(FlutterMethodChannel*)methodChannel
              mapView:(GMSMapView*)mapView
            registrar:(NSObject<FlutterPluginRegistrar>*)registrar;
-- (void)addClusterItem:(NSArray*)clustersItemToAdd;
+- (void)addClusterItems:(NSArray*)clustersItemToAdd;
 - (void)changeClusterItem:(NSArray*)clusterItemsToChange;
 - (void)removeClusterItemsIds:(NSArray*)clusterItemIdsToRemove;
 - (BOOL)onClusterItemTap:(NSString*)clusterItemId;

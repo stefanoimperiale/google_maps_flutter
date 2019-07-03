@@ -42,4 +42,8 @@
 - (void)removeMarkerIds:(NSArray*)markerIdsToRemove;
 - (BOOL)onMarkerTap:(NSString*)markerId;
 - (void)onInfoWindowTap:(NSString*)markerId;
++ (CLLocationCoordinate2D)getPosition:(NSDictionary*)marker;
++ (NSString*)getMarkerId:(NSDictionary*)marker;
 @end
+static void InterpretMarkerOptions(NSDictionary* data, id<FLTGoogleMapMarkerOptionsSink> sink,
+                                   NSObject<FlutterPluginRegistrar>* registrar);
