@@ -1,6 +1,7 @@
 #import "GoogleMapClusterController.h"
 #import "JsonConversions.h"
 #import "GoogleMapMarkerController.h"
+
 static CLLocationCoordinate2D ToLocation(NSArray* data) {
   return [FLTGoogleMapJsonConversions toLocation:data];
 }
@@ -52,7 +53,7 @@ static CLLocationCoordinate2D ToLocation(NSArray* data) {
         [[FLTGoogleMapMarkerController alloc] initMarkerWithPosition:position
                                                             markerId:clusterItemId
                                                              mapView:_mapView];
-    //TODO InterpretMarkerOptions(clusterItem, controller, _registrar);
+    InterpretMarkerOptions(clusterItem, controller, _registrar);
     [self addClusterItem:clusterItemId withController:controller];
   }
 
@@ -66,5 +67,22 @@ static CLLocationCoordinate2D ToLocation(NSArray* data) {
                                                 mapView:_mapView];
   [_clusterManager addItem:clusterItem];
   _clusterIdToController[markerId] = clusterItem; 
-} 
+}
+
+
+
+- (BOOL)onClusterItemTap:(NSString*)clusterItemId {
+   FLTGoogleMapMarkerController *clusterItemController = clusterItem;
+   NSString *clusterItemId = [clusterItemController getClusterItemId];
+   if (!clusterItemId) {
+       return;
+   }
+   [_methodChannel invokeMethod:@"clusterItem#onTap" arguments:@{@"markerId" : clusterItemId}];
+   FLTGoogleMapMarkerController* controller = _clusterIdToController[clusterItemId];
+   if (!controller) {
+     return;
+   }
+   return controller.consumeTapEvents;
+}
+
 @end

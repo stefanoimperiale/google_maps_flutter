@@ -37,4 +37,5 @@
 - (void)removeClusterItemsIds:(NSArray*)clusterItemIdsToRemove;
 - (BOOL)onClusterItemTap:(NSString*)clusterItemId;
 - (void)onInfoWindowTap:(NSString*)clusterItemId;
+- (BOOL)onClusterItemTap:(NSString*)clusterItemId;
 @end
