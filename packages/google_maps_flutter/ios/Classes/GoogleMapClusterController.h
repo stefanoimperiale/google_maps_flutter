@@ -33,9 +33,10 @@
              mapView:(GMSMapView*)mapView
            registrar:(NSObject<FlutterPluginRegistrar>*)registrar;
 - (void)addClusterItems:(NSArray*)clustersItemToAdd;
+- (void)changeClusterItems:(NSArray*)clustersItemToChange;
 - (void)changeClusterItem:(NSArray*)clusterItemsToChange;
 - (void)removeClusterItemsIds:(NSArray*)clusterItemIdsToRemove;
-- (BOOL)onClusterItemTap:(NSString*)clusterItemId;
+- (BOOL)onClusterItemTap:(FLTGoogleMapClusterController*)clusterItemController;
 - (void)onInfoWindowTap:(NSString*)clusterItemId;
-- (BOOL)onClusterItemTap:(NSString*)clusterItemId;
+- (BOOL)onClusterTap:(id<GMUCluster>)cluster;
 @end
