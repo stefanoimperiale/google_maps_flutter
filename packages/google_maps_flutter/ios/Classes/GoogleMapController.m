@@ -188,11 +188,12 @@ static double ToDouble(NSNumber* data) { return [FLTGoogleMapJsonConversions toD
     id clusterItemsToAdd = call.arguments[@"clusterItemsToAdd"];
     if ([clusterItemsToAdd isKindOfClass:[NSArray class]]) {
       [_clusterController addClusterItems:clusterItemsToAdd];
-    }//TODO
-   /* id clusterItemsToChange = call.arguments[@"clusterItemsToChange"];
-    if ([clusterItemsToChange isKindOfClass:[NSArray class]]) {
-      [_clusterItemsController changeClusterItems:clusterItemsToChange];
     }
+    id clusterItemsToChange = call.arguments[@"clusterItemsToChange"];
+    if ([clusterItemsToChange isKindOfClass:[NSArray class]]) {
+      [_clusterController changeClusterItems:clusterItemsToChange];
+    }//TODO
+    /*
     id clusterItemIdsToRemove = call.arguments[@"clusterItemIdsToRemove"];
     if ([clusterItemIdsToRemove isKindOfClass:[NSArray class]]) {
       [_clusterItemsController removeClusterItemIds:clusterItemIdsToRemove];
@@ -377,27 +378,23 @@ static double ToDouble(NSNumber* data) { return [FLTGoogleMapJsonConversions toD
 #pragma mark GMUClusterManagerDelegate
 /** Called when the user taps on a cluster marker. */
 - (void)clusterManager:(GMUClusterManager *)clusterManager didTapCluster:(id<GMUCluster>)cluster {
-  //TODO
-  GMSCameraPosition *newCamera =
-      [GMSCameraPosition cameraWithTarget:cluster.position zoom:_mapView.camera.zoom + 1];
-  GMSCameraUpdate *update = [GMSCameraUpdate setCamera:newCamera];
-  [_mapView moveCamera:update];
+  [_clusterController onClusterTap:cluster];
 }
 
 /** Called when the user taps on a cluster item marker. */
 - (void)clusterManager:(GMUClusterManager *)clusterManager
      didTapClusterItem:(id<GMUClusterItem>)clusterItem{
-     [_clusterController onClusterItemTap:clusterItemId];
+     [_clusterController onClusterItemTap:clusterItem];
 }
 
 /** Called to render a cluster */
 - (void)renderer:(id<GMUClusterRenderer>)renderer willRenderMarker:(GMSMarker *)marker {
 //TODO
-  FLTGoogleMapMarkerController *poiItem = marker.userData;
+  /*FLTGoogleMapClusterController *poiItem = marker.userData;
     if (poiItem != nil) {
-        marker.title = poiItem.name;
+        marker.title = poiItem.title;
         marker.icon = [UIImage imageNamed:@"custom_marker_icon"]; // it’s also handy to specify a custom marker icon for all markers
-    }
+    }*/
 }
 
 #pragma mark - GMSMapViewDelegate methods
@@ -427,29 +424,28 @@ static double ToDouble(NSNumber* data) { return [FLTGoogleMapJsonConversions toD
 }
 
 - (BOOL)mapView:(GMSMapView*)mapView didTapMarker:(GMSMarker*)marker {
-    //TODO
-    NSLog(@"USER DATA: %@", marker.userData);
-  FLTGoogleMapMarkerController *poiItem = marker.userData;
-    if (poiItem != nil) {
-      NSLog(@"Did tap marker for cluster item %@", poiItem.title);
-    } else {
-      NSLog(@"Did tap a normal marker");
+   id userData = marker.userData;
+   if ([userData isKindOfClass:[NSArray class]]){
+        NSString* markerId = marker.userData[0];
+        return [_markersController onMarkerTap:markerId];
     }
-  NSString* markerId = marker.userData[0];
-  return [_markersController onMarkerTap:markerId];
+   else {
+    return NO;
+   }
 }
 
 - (void)mapView:(GMSMapView*)mapView didTapInfoWindowOfMarker:(GMSMarker*)marker {
  //TODO
-   NSLog(@"INFO WINDOW USER DATA: %@", marker.userData);
-   FLTGoogleMapMarkerController *poiItem = marker.userData;
-    if (poiItem != nil) {
-      NSLog(@"Did tap marker for cluster item %@", poiItem.title);
-    } else {
-      NSLog(@"Did tap a normal marker");
-    }
-  NSString* markerId = marker.userData[0];
-  [_markersController onInfoWindowTap:markerId];
+  NSLog(@"INFO WINDOW USER DATA: %@", marker.userData);
+  id userData = marker.userData;
+  if ([userData isKindOfClass:[NSArray class]]){
+    NSLog(@"Did tap a normal marker");
+    NSString* markerId = marker.userData[0];
+    [_markersController onInfoWindowTap:markerId];
+  } else {
+   FLTGoogleMapClusterController *poiItem = marker.userData;
+   NSLog(@"Did tap marker for cluster item %@", poiItem.title);
+  }
 }
 - (void)mapView:(GMSMapView*)mapView didTapOverlay:(GMSOverlay*)overlay {
   NSString* overlayId = overlay.userData[0];

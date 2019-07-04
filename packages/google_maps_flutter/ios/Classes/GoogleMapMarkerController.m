@@ -6,7 +6,7 @@
 #import "JsonConversions.h"
 
 static UIImage* ExtractIcon(NSObject<FlutterPluginRegistrar>* registrar, NSArray* icon);
-//static void InterpretInfoWindow(id<FLTGoogleMapMarkerOptionsSink> sink, NSDictionary* data);
+static void InterpretInfoWindow(id<FLTGoogleMapMarkerOptionsSink> sink, NSDictionary* data);
 
 @implementation FLTGoogleMapMarkerController {
   GMSMarker* _marker;

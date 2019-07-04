@@ -53,7 +53,7 @@ static CLLocationCoordinate2D ToLocation(NSArray* data) {
         [[FLTGoogleMapMarkerController alloc] initMarkerWithPosition:position
                                                             markerId:clusterItemId
                                                              mapView:_mapView];
-    InterpretMarkerOptions(clusterItem, controller, _registrar);
+    //InterpretMarkerOptions(clusterItem, controller, _registrar);
     [self addClusterItem:clusterItemId withController:controller];
   }
 
@@ -69,20 +69,42 @@ static CLLocationCoordinate2D ToLocation(NSArray* data) {
   _clusterIdToController[markerId] = clusterItem; 
 }
 
+- (void)changeClusterItems:(NSArray*)clustersItemToChange {
+  for (NSDictionary* clusterItem in clustersItemToChange) {
+    [self changeClusterItem:clusterItem];
+  }
+}
 
+- (void)changeClusterItem:(NSDictionary*)clusterItem {
+   NSString* clusterItemId = [FLTMarkersController getMarkerId:clusterItem];
+   FLTGoogleMapClusterController* clusterItemController =  _clusterIdToController[clusterItemId];
+    // TODO: to be done
+      /*  if (clusterItemController != null) {
+        Convert.interpretMarkerOptions(clusterItem, controller);
+        }*/
+}
 
-- (BOOL)onClusterItemTap:(NSString*)clusterItemId {
-   FLTGoogleMapMarkerController *clusterItemController = clusterItem;
-   NSString *clusterItemId = [clusterItemController getClusterItemId];
+- (BOOL)onClusterItemTap:(FLTGoogleMapClusterController*)clusterItemController {
+   NSString *clusterItemId = clusterItemController.clusterItemId;
    if (!clusterItemId) {
-       return;
+       return NO;
    }
    [_methodChannel invokeMethod:@"clusterItem#onTap" arguments:@{@"markerId" : clusterItemId}];
    FLTGoogleMapMarkerController* controller = _clusterIdToController[clusterItemId];
    if (!controller) {
-     return;
+     return NO;
    }
    return controller.consumeTapEvents;
 }
 
+-(BOOL)onClusterTap:(id<GMUCluster>)cluster {
+   [CATransaction begin];
+   [CATransaction setValue:[NSNumber numberWithFloat: 1.0f] forKey:kCATransactionAnimationDuration];
+  GMSCameraPosition *newCamera =
+      [GMSCameraPosition cameraWithTarget:cluster.position zoom:_mapView.camera.zoom + 1];
+  GMSCameraUpdate *update = [GMSCameraUpdate setCamera:newCamera];
+  [_mapView animateWithCameraUpdate:update];
+  [CATransaction commit];
+  return YES;
+}
 @end
