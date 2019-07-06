@@ -77,6 +77,77 @@ static void InterpretInfoWindow(id<FLTGoogleMapMarkerOptionsSink> sink, NSDictio
 }
 @end
 
+@implementation FLTMarkerOptions {
+  BOOL _consumeTapEvents;
+}
+- (instancetype)initMarkerOptionsWithPosition:(CLLocationCoordinate2D)position {
+  self = [super init];
+  if (self) {
+    _consumeTapEvents = NO;
+  }
+  return self;
+}
+- (BOOL)consumeTapEvents {
+  return _consumeTapEvents;
+}
+
+- (NSString*) build (NSDictionary*) data registrar:(NSObject<FlutterPluginRegistrar>*) registrar {
+    if (data[@"markerId"] != nil) {
+      InterpretMarkerOptions(data, self, registrar);
+      return data[@"markerId"];
+    } else {
+    NSString* error = [NSString
+              stringWithFormat:@"Id of marker is null"];
+          NSException* exception = [NSException exceptionWithName:@"InvalidMarkerId"
+                                                           reason:error
+                                                         userInfo:nil];
+          @throw exception;
+        }
+    }
+}
+#pragma mark - FLTGoogleMapMarkerOptionsSink methods
+
+- (void)setAlpha:(float)alpha {
+  opacity = alpha;
+}
+- (void)setAnchor:(CGPoint)anchor {
+  groundAnchor = anchor;
+}
+- (void)setConsumeTapEvents:(BOOL)consumes {
+  _consumeTapEvents = consumes;
+}
+- (void)setDraggable:(BOOL)draggable {
+  _marker.draggable = draggable;
+}
+- (void)setFlat:(BOOL)flat {
+  _marker.flat = flat;
+}
+- (void)setIcon:(UIImage*)icon {
+  _marker.icon = icon;
+}
+- (void)setInfoWindowAnchor:(CGPoint)anchor {
+  _marker.infoWindowAnchor = anchor;
+}
+- (void)setInfoWindowTitle:(NSString*)title snippet:(NSString*)snippet {
+  _marker.title = title;
+  _marker.snippet = snippet;
+}
+- (void)setPosition:(CLLocationCoordinate2D)position {
+  _marker.position = position;
+}
+- (void)setRotation:(CLLocationDegrees)rotation {
+  _marker.rotation = rotation;
+}
+- (void)setVisible:(BOOL)visible {
+  _marker.map = visible ? _mapView : nil;
+}
+- (void)setZIndex:(int)zIndex {
+  _marker.zIndex = zIndex;
+}
+@end
+
+
+
 static double ToDouble(NSNumber* data) { return [FLTGoogleMapJsonConversions toDouble:data]; }
 
 static float ToFloat(NSNumber* data) { return [FLTGoogleMapJsonConversions toFloat:data]; }

@@ -33,6 +33,24 @@
 - (void)removeMarker;
 @end
 
+@interface FLTMarkerOptions : NSObject<FLTGoogleMapMarkerOptionsSink>
+ @property(atomic, readonly) float alpha;
+ @property(atomic, readonly) CGPoint anchor;
+ @property(atomic, readonly) BOOL draggable;
+ @property(atomic, readonly) BOOL flat;
+ @property(atomic, readonly) UIImage* icon;
+ @property(atomic, readonly) CGPoint infoWindowAnchor;
+ @property(atomic, readonly) BOOL consumeTapEvents;
+ @property(atomic, readonly) NSString* title;
+ @property(atomic, readonly) NSString* snippet;
+ @property(atomic, readonly) CLLocationCoordinate2D position;
+ @property(atomic, readonly) CLLocationDegrees rotation;
+ @property(atomic, readonly) BOOL visible;
+ @property(atomic, readonly) int zIndex;
+ - (BOOL)consumeTapEvents;
+ - (NSString*) build (NSDictionary*) data registrar:(NSObject<FlutterPluginRegistrar>*) registrar;
+@end
+
 @interface FLTMarkersController : NSObject
 - (instancetype)init:(FlutterMethodChannel*)methodChannel
              mapView:(GMSMapView*)mapView

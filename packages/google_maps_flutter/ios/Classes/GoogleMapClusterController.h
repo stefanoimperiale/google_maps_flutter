@@ -13,12 +13,10 @@
 
 @property(nonatomic, readonly) CLLocationCoordinate2D position;
 @property(nonatomic, readonly) NSString *clusterItemId;
-@property(nonatomic, readonly) NSString *title;
+@property(nonatomic, readonly) NSString *name;
 @property(nonatomic, readonly) NSString *snippet;
 @property(nonatomic, readonly) BOOL consumeTapEvents;
 @property(nonatomic, readonly) UIImage *icon;
-@property(nonatomic, readwrite) NSString *mapView;
-
 - (instancetype)initClusterItemWithPosition:(CLLocationCoordinate2D)position 
     andName:(NSString *)name 
     andClusterItemId: (NSString *)clusterItemId;

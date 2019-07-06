@@ -8,18 +8,15 @@ static CLLocationCoordinate2D ToLocation(NSArray* data) {
 
 @implementation FLTGoogleMapClusterController
 
-- (instancetype)initClusterItemWithMarker:(GMSMarker*)marker
-                                           andMarkerId:(NSString*)markerId
-                                           consumeTapEvents:(BOOL)consumeTapEvents
-                                           mapView: (GMSMapView*)mapView {
+- (instancetype)initClusterItemWithId: clusterItemId
+                                       andOptions:markerOptions;{
   if ((self = [super init])) {
-    _position = marker.position;
-    _title = marker.title;
-    _snippet = marker.snippet;
-    _clusterItemId = markerId;
-    _consumeTapEvents = consumeTapEvents; 
-    _icon = marker.icon;
-    _mapView = mapView;
+    _position = markerOptions.position;
+    _name = markerOptions.title;
+    _snippet = markerOptions.snippet;
+    _clusterItemId = clusterItemId;
+    _consumeTapEvents = markerOptions.consumeTapEvents;
+    _icon = markerOptions.icon;
   } 
   return self;
 }
@@ -46,25 +43,16 @@ static CLLocationCoordinate2D ToLocation(NSArray* data) {
 }
 - (void)addClusterItems:(NSArray*)clustersItemToAdd {
   for (NSDictionary* clusterItem in clustersItemToAdd) {
-    CLLocationCoordinate2D position = [FLTMarkersController getPosition:clusterItem];
-    NSString* clusterItemId = [FLTMarkersController getMarkerId:clusterItem];
-    
-    FLTGoogleMapMarkerController* controller =
-        [[FLTGoogleMapMarkerController alloc] initMarkerWithPosition:position
-                                                            markerId:clusterItemId
-                                                             mapView:_mapView];
-    //InterpretMarkerOptions(clusterItem, controller, _registrar);
-    [self addClusterItem:clusterItemId withController:controller];
+    FLTMakerOptions* markerOptions = [[FLTMarkerOptions alloc] init];
+    NSString* clusterItemId = [markerOptions build:clusterItem registrar:_registrar];
+    [self addClusterItem:clusterItemId withOptions:markerOptions];
   }
-
   // Call cluster() after items have been added to perform the clustering and rendering on map.
   [_clusterManager cluster];
 }
-- (void)addClusterItem:(NSString*)markerId withController:(FLTGoogleMapMarkerController*) controller {
-  GMSMarker* marker = [controller getMarker];
-  FLTGoogleMapClusterController* clusterItem = [[FLTGoogleMapClusterController alloc] initClusterItemWithMarker: marker
-                                                andMarkerId:markerId consumeTapEvents:[controller consumeTapEvents]
-                                                mapView:_mapView];
+- (void)addClusterItem:(NSString*)clusterItemId withOptions:(FLTMarkerOptions*) markerOptions{
+  FLTGoogleMapClusterController* clusterItem = [[FLTGoogleMapClusterController alloc] initClusterItemWithId: clusterItemId
+                                                andOptions:markerOptions];
   [_clusterManager addItem:clusterItem];
   _clusterIdToController[markerId] = clusterItem; 
 }
