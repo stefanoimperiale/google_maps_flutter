@@ -43,10 +43,10 @@ public class CustomClusterRenderer extends DefaultClusterRenderer<ClusterItemCon
 
   @Override
   protected void onBeforeClusterRendered(Cluster<ClusterItemController> cluster, MarkerOptions markerOptions) {
-    if (clusterOption != null) {
+   /* if (clusterOption != null) {
       final Bitmap icon = mClusterIconGenerator.makeIcon("SIZE" + cluster.getSize());
       markerOptions.icon(BitmapDescriptorFactory.
               fromBitmap(icon));
-    }
+    }*/
   }
 }

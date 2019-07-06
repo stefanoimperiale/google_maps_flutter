@@ -377,14 +377,14 @@ static double ToDouble(NSNumber* data) { return [FLTGoogleMapJsonConversions toD
 
 #pragma mark GMUClusterManagerDelegate
 /** Called when the user taps on a cluster marker. */
-- (void)clusterManager:(GMUClusterManager *)clusterManager didTapCluster:(id<GMUCluster>)cluster {
-  [_clusterController onClusterTap:cluster];
+- (BOOL)clusterManager:(GMUClusterManager *)clusterManager didTapCluster:(id<GMUCluster>)cluster {
+  return [_clusterController onClusterTap:cluster];
 }
 
 /** Called when the user taps on a cluster item marker. */
-- (void)clusterManager:(GMUClusterManager *)clusterManager
+- (BOOL)clusterManager:(GMUClusterManager *)clusterManager
      didTapClusterItem:(id<GMUClusterItem>)clusterItem{
-     [_clusterController onClusterItemTap:clusterItem];
+     return [_clusterController onClusterItemTap:clusterItem];
 }
 
 /** Called to render a cluster */

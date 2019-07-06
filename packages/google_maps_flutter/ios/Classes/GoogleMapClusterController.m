@@ -94,7 +94,7 @@ static CLLocationCoordinate2D ToLocation(NSArray* data) {
    if (!controller) {
      return NO;
    }
-   return controller.consumeTapEvents;
+   return NO;//controller.consumeTapEvents;
 }
 
 -(BOOL)onClusterTap:(id<GMUCluster>)cluster {
