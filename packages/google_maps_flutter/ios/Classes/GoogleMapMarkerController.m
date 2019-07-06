@@ -7,6 +7,8 @@
 
 static UIImage* ExtractIcon(NSObject<FlutterPluginRegistrar>* registrar, NSArray* icon);
 static void InterpretInfoWindow(id<FLTGoogleMapMarkerOptionsSink> sink, NSDictionary* data);
+static void InterpretMarkerOptions(NSDictionary* data, id<FLTGoogleMapMarkerOptionsSink> sink,
+                                   NSObject<FlutterPluginRegistrar>* registrar);
 
 @implementation FLTGoogleMapMarkerController {
   GMSMarker* _marker;
@@ -91,7 +93,7 @@ static void InterpretInfoWindow(id<FLTGoogleMapMarkerOptionsSink> sink, NSDictio
   return _consumeTapEvents;
 }
 
-- (NSString*) build (NSDictionary*) data registrar:(NSObject<FlutterPluginRegistrar>*) registrar {
+- (NSString*) build: (NSDictionary*) data registrar:(NSObject<FlutterPluginRegistrar>*) registrar {
     if (data[@"markerId"] != nil) {
       InterpretMarkerOptions(data, self, registrar);
       return data[@"markerId"];
@@ -103,46 +105,46 @@ static void InterpretInfoWindow(id<FLTGoogleMapMarkerOptionsSink> sink, NSDictio
                                                          userInfo:nil];
           @throw exception;
         }
-    }
 }
+
 #pragma mark - FLTGoogleMapMarkerOptionsSink methods
 
 - (void)setAlpha:(float)alpha {
-  opacity = alpha;
+  _alpha = alpha;
 }
 - (void)setAnchor:(CGPoint)anchor {
-  groundAnchor = anchor;
+  _anchor = anchor;
 }
 - (void)setConsumeTapEvents:(BOOL)consumes {
   _consumeTapEvents = consumes;
 }
 - (void)setDraggable:(BOOL)draggable {
-  _marker.draggable = draggable;
+  _draggable = draggable;
 }
 - (void)setFlat:(BOOL)flat {
-  _marker.flat = flat;
+  _flat = flat;
 }
 - (void)setIcon:(UIImage*)icon {
-  _marker.icon = icon;
+  _icon = icon;
 }
 - (void)setInfoWindowAnchor:(CGPoint)anchor {
-  _marker.infoWindowAnchor = anchor;
+  _infoWindowAnchor = anchor;
 }
 - (void)setInfoWindowTitle:(NSString*)title snippet:(NSString*)snippet {
-  _marker.title = title;
-  _marker.snippet = snippet;
+  _title = title;
+  _snippet = snippet;
 }
 - (void)setPosition:(CLLocationCoordinate2D)position {
-  _marker.position = position;
+  _position = position;
 }
 - (void)setRotation:(CLLocationDegrees)rotation {
-  _marker.rotation = rotation;
+  _rotation = rotation;
 }
 - (void)setVisible:(BOOL)visible {
-  _marker.map = visible ? _mapView : nil;
+  _visible = visible;
 }
 - (void)setZIndex:(int)zIndex {
-  _marker.zIndex = zIndex;
+  _zIndex = zIndex;
 }
 @end
 

@@ -82,6 +82,9 @@ class GoogleMapController {
       case 'custerItemInfoWindow#onTap':
         _googleMapState.onCusterItemInfoWindowTap(call.arguments['markerId']);
         break;
+      case "clusterItem#onBeforeTap":
+        _googleMapState.onClusterBefore(call.arguments["markerId"]);
+        break;
       default:
         throw MissingPluginException();
     }

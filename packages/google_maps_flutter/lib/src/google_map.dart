@@ -360,6 +360,14 @@ class _GoogleMapState extends State<GoogleMap> {
     }
   }
 
+  void onClusterBefore(String clusterIdParam) {
+    assert(clusterIdParam != null);
+    final MarkerId markerId = MarkerId(clusterIdParam);
+    if (_clusterItems[markerId]?.onBeforeTap != null) {
+      _clusterItems[markerId].onBeforeTap();
+    }
+  }
+
   void onCusterItemInfoWindowTap(String clusterItemIdParam) {
     assert(clusterItemIdParam != null);
     final MarkerId markerId = MarkerId(clusterItemIdParam);

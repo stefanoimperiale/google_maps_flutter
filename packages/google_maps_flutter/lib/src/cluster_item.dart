@@ -42,6 +42,7 @@ class ClusterItem {
     this.visible = true,
     this.zIndex = 0.0,
     this.onTap,
+    this.onBeforeTap
   }) : assert(alpha == null || (0.0 <= alpha && alpha <= 1.0));
 
   /// Uniquely identifies a [Marker].
@@ -98,6 +99,7 @@ class ClusterItem {
   /// Callbacks to receive tap events for markers placed on this map.
   final VoidCallback onTap;
 
+  final VoidCallback onBeforeTap;
   /// Creates a new [Marker] object whose values are the same as this instance,
   /// unless overwritten by the specified parameters.
   ClusterItem copyWith({

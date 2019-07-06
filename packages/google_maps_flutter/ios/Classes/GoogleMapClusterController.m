@@ -8,17 +8,22 @@ static CLLocationCoordinate2D ToLocation(NSArray* data) {
 
 @implementation FLTGoogleMapClusterController
 
-- (instancetype)initClusterItemWithId: clusterItemId
-                                       andOptions:markerOptions;{
+- (instancetype)initClusterItemWithId:(NSString*) clusterItemId
+                                       andOptions:(FLTMarkerOptions*)markerOptions{
   if ((self = [super init])) {
-    _position = markerOptions.position;
-    _name = markerOptions.title;
-    _snippet = markerOptions.snippet;
+    [self changeOptions: markerOptions];
     _clusterItemId = clusterItemId;
-    _consumeTapEvents = markerOptions.consumeTapEvents;
-    _icon = markerOptions.icon;
-  } 
+  }
   return self;
+}
+
+- (void) changeOptions: (FLTMarkerOptions*)markerOptions {
+  _position = markerOptions.position;
+  _name = markerOptions.title;
+  _snippet = markerOptions.snippet;
+  _consumeTapEvents = markerOptions.consumeTapEvents;
+  _icon = markerOptions.icon;
+  _alpha = markerOptions.alpha;
 }
 
 @end
@@ -43,7 +48,7 @@ static CLLocationCoordinate2D ToLocation(NSArray* data) {
 }
 - (void)addClusterItems:(NSArray*)clustersItemToAdd {
   for (NSDictionary* clusterItem in clustersItemToAdd) {
-    FLTMakerOptions* markerOptions = [[FLTMarkerOptions alloc] init];
+    FLTMarkerOptions* markerOptions = [[FLTMarkerOptions alloc] init];
     NSString* clusterItemId = [markerOptions build:clusterItem registrar:_registrar];
     [self addClusterItem:clusterItemId withOptions:markerOptions];
   }
@@ -54,7 +59,7 @@ static CLLocationCoordinate2D ToLocation(NSArray* data) {
   FLTGoogleMapClusterController* clusterItem = [[FLTGoogleMapClusterController alloc] initClusterItemWithId: clusterItemId
                                                 andOptions:markerOptions];
   [_clusterManager addItem:clusterItem];
-  _clusterIdToController[markerId] = clusterItem; 
+  _clusterIdToController[clusterItemId] = clusterItem;
 }
 
 - (void)changeClusterItems:(NSArray*)clustersItemToChange {
@@ -66,10 +71,12 @@ static CLLocationCoordinate2D ToLocation(NSArray* data) {
 - (void)changeClusterItem:(NSDictionary*)clusterItem {
    NSString* clusterItemId = [FLTMarkersController getMarkerId:clusterItem];
    FLTGoogleMapClusterController* clusterItemController =  _clusterIdToController[clusterItemId];
-    // TODO: to be done
-      /*  if (clusterItemController != null) {
-        Convert.interpretMarkerOptions(clusterItem, controller);
-        }*/
+
+   if (clusterItemController != nil) {
+        FLTMarkerOptions* markerOptions = [[FLTMarkerOptions alloc] init];
+        [markerOptions build:clusterItem registrar:_registrar];
+        [clusterItemController changeOptions:markerOptions];
+   }
 }
 
 - (BOOL)onClusterItemTap:(FLTGoogleMapClusterController*)clusterItemController {
@@ -77,12 +84,13 @@ static CLLocationCoordinate2D ToLocation(NSArray* data) {
    if (!clusterItemId) {
        return NO;
    }
+   [_methodChannel invokeMethod:@"clusterItem#onBeforeTap" arguments:@{@"markerId" : clusterItemId}];
    [_methodChannel invokeMethod:@"clusterItem#onTap" arguments:@{@"markerId" : clusterItemId}];
    FLTGoogleMapMarkerController* controller = _clusterIdToController[clusterItemId];
    if (!controller) {
      return NO;
    }
-   return NO;//controller.consumeTapEvents;
+   return controller.consumeTapEvents;
 }
 
 -(BOOL)onClusterTap:(id<GMUCluster>)cluster {

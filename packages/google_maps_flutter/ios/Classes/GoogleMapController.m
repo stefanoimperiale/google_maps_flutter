@@ -58,6 +58,7 @@ static double ToDouble(NSNumber* data) { return [FLTGoogleMapJsonConversions toD
   FLTPolylinesController* _polylinesController;
   FLTCirclesController* _circlesController;
   FLTClusterController* _clusterController;
+  NSString* selectedMarkerId;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
@@ -192,7 +193,12 @@ static double ToDouble(NSNumber* data) { return [FLTGoogleMapJsonConversions toD
     id clusterItemsToChange = call.arguments[@"clusterItemsToChange"];
     if ([clusterItemsToChange isKindOfClass:[NSArray class]]) {
       [_clusterController changeClusterItems:clusterItemsToChange];
-    }//TODO
+    }
+
+    [_clusterController addClusterItems:[[NSMutableArray alloc] init]];
+
+
+    //TODO
     /*
     id clusterItemIdsToRemove = call.arguments[@"clusterItemIdsToRemove"];
     if ([clusterItemIdsToRemove isKindOfClass:[NSArray class]]) {
@@ -384,17 +390,29 @@ static double ToDouble(NSNumber* data) { return [FLTGoogleMapJsonConversions toD
 /** Called when the user taps on a cluster item marker. */
 - (BOOL)clusterManager:(GMUClusterManager *)clusterManager
      didTapClusterItem:(id<GMUClusterItem>)clusterItem{
+     selectedMarkerId = ((FLTGoogleMapClusterController*)clusterItem).clusterItemId;
      return [_clusterController onClusterItemTap:clusterItem];
 }
 
 /** Called to render a cluster */
 - (void)renderer:(id<GMUClusterRenderer>)renderer willRenderMarker:(GMSMarker *)marker {
 //TODO
-  /*FLTGoogleMapClusterController *poiItem = marker.userData;
-    if (poiItem != nil) {
-        marker.title = poiItem.title;
-        marker.icon = [UIImage imageNamed:@"custom_marker_icon"]; // it’s also handy to specify a custom marker icon for all markers
-    }*/
+ id userData = marker.userData;
+  if ([userData isKindOfClass:[FLTGoogleMapClusterController class]]){
+    FLTGoogleMapClusterController *clusterItem = userData;
+    if (clusterItem != nil) {
+        marker.icon = clusterItem.icon;
+        marker.opacity = clusterItem.alpha;
+        if([clusterItem.clusterItemId isEqualToString:selectedMarkerId]){
+         marker.title = clusterItem.name;
+         marker.snippet = clusterItem.snippet;
+         marker.map = _mapView;
+         [_mapView setSelectedMarker:marker];
+        }
+           //  [_mapView setSelectedMarker:marker];
+        //marker.icon = [UIImage imageNamed:@"custom_marker_icon"]; // it’s also handy to specify a custom marker icon for all markers
+    }
+  }
 }
 
 #pragma mark - GMSMapViewDelegate methods
@@ -424,13 +442,16 @@ static double ToDouble(NSNumber* data) { return [FLTGoogleMapJsonConversions toD
 }
 
 - (BOOL)mapView:(GMSMapView*)mapView didTapMarker:(GMSMarker*)marker {
+
    id userData = marker.userData;
    if ([userData isKindOfClass:[NSArray class]]){
         NSString* markerId = marker.userData[0];
+        selectedMarkerId = markerId;
         return [_markersController onMarkerTap:markerId];
     }
    else {
-    return NO;
+      // return [_clusterController onClusterItemTap:marker.userData];
+      return NO;
    }
 }
 
@@ -444,7 +465,7 @@ static double ToDouble(NSNumber* data) { return [FLTGoogleMapJsonConversions toD
     [_markersController onInfoWindowTap:markerId];
   } else {
    FLTGoogleMapClusterController *poiItem = marker.userData;
-   NSLog(@"Did tap marker for cluster item %@", poiItem.title);
+   NSLog(@"Did tap marker for cluster item %@", poiItem.name);
   }
 }
 - (void)mapView:(GMSMapView*)mapView didTapOverlay:(GMSOverlay*)overlay {

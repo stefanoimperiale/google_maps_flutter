@@ -15,6 +15,7 @@
 @property(nonatomic, readonly) NSString *clusterItemId;
 @property(nonatomic, readonly) NSString *name;
 @property(nonatomic, readonly) NSString *snippet;
+@property(nonatomic, readonly) float alpha;
 @property(nonatomic, readonly) BOOL consumeTapEvents;
 @property(nonatomic, readonly) UIImage *icon;
 - (instancetype)initClusterItemWithPosition:(CLLocationCoordinate2D)position 

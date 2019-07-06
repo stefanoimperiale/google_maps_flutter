@@ -48,7 +48,7 @@
  @property(atomic, readonly) BOOL visible;
  @property(atomic, readonly) int zIndex;
  - (BOOL)consumeTapEvents;
- - (NSString*) build (NSDictionary*) data registrar:(NSObject<FlutterPluginRegistrar>*) registrar;
+ - (NSString*) build: (NSDictionary*) data registrar:(NSObject<FlutterPluginRegistrar>*) registrar;
 @end
 
 @interface FLTMarkersController : NSObject

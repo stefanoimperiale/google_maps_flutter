@@ -6,6 +6,7 @@ import 'dart:async';
 import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -52,6 +53,7 @@ class PlaceMarkerBodyState extends State<PlaceMarkerBody> {
 
   void _onMarkerTapped(MarkerId markerId) {
     final Marker tappedMarker = markers[markerId];
+    print("tappedMarker=$tappedMarker, markerId=$markerId");
     if (tappedMarker != null) {
       setState(() {
         if (markers.containsKey(selectedMarker)) {
@@ -70,11 +72,11 @@ class PlaceMarkerBodyState extends State<PlaceMarkerBody> {
     }
   }
 
-  void _onClusterMarkerTapped(MarkerId markerId) {
+  void _onClusterMarkerTapped(MarkerId markerId) async{
     final ClusterItem tappedClusterItem = clusterItems[markerId];
     print("tappedClusterItem=$tappedClusterItem, markerId=$markerId");
     if (tappedClusterItem != null) {
-      setState(() {
+     setState(() {
         if (clusterItems.containsKey(selectedMarker)) {
           final ClusterItem resetOld = clusterItems[selectedMarker]
               .copyWith(iconParam: BitmapDescriptor.defaultMarker);
@@ -87,8 +89,17 @@ class PlaceMarkerBodyState extends State<PlaceMarkerBody> {
           ),
         );
         clusterItems[markerId] = newClusterItem;
+
+        //tappedClusterItem.copyWith(infoWindow: InfoWindow(title: "tit", snippet: '*'));
       });
+
     }
+  }
+  void stateTest()async{
+    setState(() {
+
+    });
+    return;
   }
 
   void _add() {
@@ -138,6 +149,7 @@ class PlaceMarkerBodyState extends State<PlaceMarkerBody> {
       onTap: () {
         _onClusterMarkerTapped(markerId);
       },
+
     );
     setState(() {
       clusterItems[markerId] = clusterItem;
@@ -233,12 +245,22 @@ class PlaceMarkerBodyState extends State<PlaceMarkerBody> {
 
   Future<void> _changeAlpha() async {
     final Marker marker = markers[selectedMarker];
-    final double current = marker.alpha;
-    setState(() {
-      markers[selectedMarker] = marker.copyWith(
-        alphaParam: current < 0.1 ? 1.0 : current * 0.75,
-      );
-    });
+    if (marker != null) {
+      final double current = marker.alpha;
+      setState(() {
+        markers[selectedMarker] = marker.copyWith(
+          alphaParam: current < 0.1 ? 1.0 : current * 0.75,
+        );
+      });
+    }else {
+      final ClusterItem clusterItem = clusterItems[selectedMarker];
+      final double current = clusterItem.alpha;
+      setState(() {
+        clusterItems[selectedMarker] = clusterItem.copyWith(
+          alphaParam: current < 0.1 ? 1.0 : current * 0.75,
+        );
+      });
+    }
   }
 
   Future<void> _changeRotation() async {
